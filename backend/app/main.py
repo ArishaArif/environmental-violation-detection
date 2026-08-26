@@ -8,18 +8,16 @@ from .routers import incidents
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Environmental Violation Detection API")
-
-# Enable CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],          # tighten this later if you have time
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 app.include_router(incidents.router)
 
 @app.get("/health")
 def health_check():
     return {"status": "ok"}
+
