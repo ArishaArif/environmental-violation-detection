@@ -1,0 +1,228 @@
+.incident-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--bg-panel);
+  border: var(--border-hairline);
+  border-left: 3px solid var(--status-color, var(--border-subtle));
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-panel);
+  transition: border-color 140ms ease;
+}
+
+.incident-card[data-violation='littering'] {
+  --violation-color: var(--violation-litter);
+  --violation-tint: var(--tint-blue);
+}
+
+.incident-card[data-violation='smoke'] {
+  --violation-color: var(--violation-smoke);
+  --violation-tint: var(--tint-yellow);
+}
+
+
+.incident-card[data-status='pending'] {
+  --status-color: var(--accent-orange);
+  --status-tint: var(--tint-orange);
+}
+
+.incident-card[data-status='accepted'] {
+  --status-color: var(--status-green);
+  --status-tint: var(--tint-green);
+}
+
+.incident-card[data-status='needs_investigation'] {
+  --status-color: var(--accent-yellow);
+  --status-tint: var(--tint-yellow);
+}
+
+.incident-card[data-status='rejected'] {
+  --status-color: var(--status-red);
+  --status-tint: var(--tint-red);
+}
+
+.incident-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.incident-card__badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px var(--space-2);
+  border: 1px solid var(--violation-color, var(--accent-orange));
+  border-radius: var(--radius-sm);
+  background: var(--violation-tint, var(--tint-orange));
+  color: var(--violation-color, var(--accent-orange));
+  font-family: var(--font-display);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.incident-card__head-right {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.incident-card__status {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-sm);
+  background: var(--status-tint, var(--tint-orange));
+  color: var(--status-color, var(--accent-orange));
+  font-family: var(--font-display);
+  font-size: var(--fs-2xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.incident-card__id {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--ls-label);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.incident-card__body {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.incident-card__thumb {
+  flex: 0 0 auto;
+  width: 100px;
+  aspect-ratio: 16 / 10;
+  background: var(--bg-panel-raised);
+  border: var(--border-hairline);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.incident-card__thumb-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.incident-card__info {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.incident-card__plate {
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-tight);
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.incident-card__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid transparent;
+  border-image: linear-gradient(
+      to right,
+      var(--accent-orange) 0%,
+      var(--accent-orange) 38%,
+      var(--border-subtle) 38%,
+      var(--border-subtle) 100%
+    )
+    1;
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
+  letter-spacing: var(--ls-label);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.incident-card__meta-time,
+.incident-card__meta-sep {
+  flex: 0 0 auto;
+}
+
+.incident-card__meta-sep {
+  color: var(--border-subtle);
+}
+
+.incident-card__meta-conf {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.incident-card__actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.incident-card__btn {
+  flex: 1 1 0;
+  padding: var(--space-3) var(--space-2);
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: filter 120ms ease, opacity 120ms ease;
+}
+
+.incident-card__btn:hover {
+  filter: brightness(1.12);
+}
+
+.incident-card__btn:active {
+  filter: brightness(0.95);
+}
+
+.incident-card__btn:focus-visible {
+  outline: 2px solid var(--text-primary);
+  outline-offset: -2px;
+}
+
+.incident-card__btn--accept {
+  background: var(--action-accept);
+}
+
+.incident-card__btn--investigate {
+  background: var(--action-investigate);
+}
+
+.incident-card__btn--reject {
+  background: var(--action-reject);
+}
+
+/* Once a decision is made, the chosen action carries an inset ring and
+   the other two recede, so the card's current status reads at a glance. */
+.incident-card__btn.is-active {
+  box-shadow: inset 0 0 0 2px var(--text-primary);
+}
+
+.incident-card__actions:has(.is-active) .incident-card__btn:not(.is-active) {
+  opacity: 0.45;
+}

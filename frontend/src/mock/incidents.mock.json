@@ -1,0 +1,110 @@
+[
+  {
+    "id": 8821,
+    "timestamp": "2026-08-27T09:43:00Z",
+    "location_lat": 31.5590,
+    "location_lng": 74.3294,
+    "violation_type": "littering",
+    "plate_number": "LEW-8821",
+    "plate_confidence": 0.94,
+    "confidence": 0.91,
+    "evidence_path": "http://localhost:8000/evidence/frame_001.jpg",
+    "review_status": "pending"
+  },
+  {
+    "id": 8822,
+    "timestamp": "2026-08-27T09:39:00Z",
+    "location_lat": 31.5102,
+    "location_lng": 74.3441,
+    "violation_type": "smoke",
+    "plate_number": "MNA-9902",
+    "plate_confidence": 0.88,
+    "confidence": 0.83,
+    "evidence_path": "http://localhost:8000/evidence/frame_002.jpg",
+    "review_status": "pending"
+  },
+  {
+    "id": 8823,
+    "timestamp": "2026-08-27T09:31:00Z",
+    "location_lat": 31.4712,
+    "location_lng": 74.3958,
+    "violation_type": "littering",
+    "plate_number": "LEB-4501",
+    "plate_confidence": 0.96,
+    "confidence": 0.94,
+    "evidence_path": "http://localhost:8000/evidence/frame_003.jpg",
+    "review_status": "accepted"
+  },
+  {
+    "id": 8824,
+    "timestamp": "2026-08-27T09:24:00Z",
+    "location_lat": 31.4835,
+    "location_lng": 74.3201,
+    "violation_type": "smoke",
+    "plate_number": null,
+    "plate_confidence": null,
+    "confidence": 0.72,
+    "evidence_path": "http://localhost:8000/evidence/frame_004.jpg",
+    "review_status": "needs_investigation"
+  },
+  {
+    "id": 8825,
+    "timestamp": "2026-08-27T09:12:00Z",
+    "location_lat": 31.4698,
+    "location_lng": 74.2712,
+    "violation_type": "littering",
+    "plate_number": "LKC-1212",
+    "plate_confidence": 0.79,
+    "confidence": 0.81,
+    "evidence_path": "http://localhost:8000/evidence/frame_005.jpg",
+    "review_status": "rejected"
+  },
+  {
+    "id": 8826,
+    "timestamp": "2026-08-27T08:57:00Z",
+    "location_lat": 31.5138,
+    "location_lng": 74.3486,
+    "violation_type": "smoke",
+    "plate_number": "LHR-3377",
+    "plate_confidence": 0.91,
+    "confidence": 0.89,
+    "evidence_path": "http://localhost:8000/evidence/frame_006.jpg",
+    "review_status": "accepted"
+  },
+  {
+    "id": 8827,
+    "timestamp": "2026-08-27T08:40:00Z",
+    "location_lat": 31.5347,
+    "location_lng": 74.3601,
+    "violation_type": "littering",
+    "plate_number": "LEA-6620",
+    "plate_confidence": 0.85,
+    "confidence": 0.77,
+    "evidence_path": "http://localhost:8000/evidence/frame_007.jpg",
+    "review_status": "pending"
+  },
+  {
+    "id": 8828,
+    "timestamp": "2026-08-27T08:05:00Z",
+    "location_lat": 31.4681,
+    "location_lng": 74.2453,
+    "violation_type": "smoke",
+    "plate_number": "LED-1043",
+    "plate_confidence": 0.63,
+    "confidence": 0.68,
+    "evidence_path": "http://localhost:8000/evidence/frame_008.jpg",
+    "review_status": "needs_investigation"
+  },
+  {
+    "id": 8829,
+    "timestamp": "2026-08-27T07:30:00Z",
+    "location_lat": 31.5849,
+    "location_lng": 74.3812,
+    "violation_type": "littering",
+    "plate_number": null,
+    "plate_confidence": null,
+    "confidence": 0.74,
+    "evidence_path": "http://localhost:8000/evidence/frame_009.jpg",
+    "review_status": "rejected"
+  }
+]
