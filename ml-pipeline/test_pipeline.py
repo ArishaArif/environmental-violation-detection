@@ -19,7 +19,7 @@ os.makedirs(EVIDENCE_DIR, exist_ok=True)
 # 1. Load local YOLOv8 model globally (Removed Roboflow configuration)
 model = YOLO('best.pt')
 
-def process_and_report_violation(image_path, violation_type="smoke", location_lat=31.0217, location_lng=73.8532):
+def process_and_report_violation(image_path, violation_type="littering", location_lat=31.0217, location_lng=73.8532):
     # Read Image
     img = cv2.imread(image_path)
     if img is None:
@@ -50,7 +50,7 @@ def process_and_report_violation(image_path, violation_type="smoke", location_la
     # 4. Extract Text & Confidence via Reusable Module
     plate_data = extract_plate_data(crop_img)
 
-    # 5. Build and Send JSON Payload (Strict Schema matching)
+    # 5. Build and Send JSON Payload
     payload = {
         "violation_type": violation_type,
         "confidence": detection_conf,
@@ -59,7 +59,6 @@ def process_and_report_violation(image_path, violation_type="smoke", location_la
         "location_lat": location_lat,
         "location_lng": location_lng,
         "evidence_path": evidence_filename
-        # review_status has been completely removed
     }
 
     try:
@@ -72,7 +71,6 @@ def process_and_report_violation(image_path, violation_type="smoke", location_la
         print("Connection refused. Is Uvicorn running on port 8000?")
 
 if __name__ == "__main__":
-    # Correct path applied directly to your ml-pipeline folder
     test_folder = r"C:\Users\user\OneDrive\Desktop\ml-pipeline\Pakistani-Number-plates.v1i.yolov8\test\images"
     
     print(f"Starting batch processing for folder: {test_folder}")
