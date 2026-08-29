@@ -7,7 +7,7 @@ class Incident(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     timestamp = Column(DateTime(timezone=True), server_default=func.now())
-    violation_type = Column(String, nullable=False)      # "littering" | "smoke" | etc.
+    violation_type = Column(String, nullable=False)      # "littering" 
     confidence = Column(Float, nullable=False)            # 0.0–1.0 from the AI model
     plate_number = Column(String, nullable=True)          # from ANPR, may be null
     plate_confidence = Column(Float, nullable=True)
