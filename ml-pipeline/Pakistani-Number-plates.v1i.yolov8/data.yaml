@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 1
+names: ['Number-plate']
+
+roboflow:
+  workspace: malik-kashif-saeed
+  project: pakistani-number-plates
+  version: 1
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/malik-kashif-saeed/pakistani-number-plates/dataset/1

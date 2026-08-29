@@ -1,7 +1,9 @@
 # Environmental Violation Detection System
 
 An AI-powered system designed to detect environmental violations (such as vehicle littering and exhaust smoke) from CCTV footage, extract license plate numbers using ANPR, and log incidents into a central management dashboard.
+
 ---
+
 ## 🏗 Project Architecture
 
 ```text
@@ -15,7 +17,9 @@ An AI-powered system designed to detect environmental violations (such as vehicl
           │
           ▼  (GET /incidents/)
   [ Frontend Dashboard ]
+```
 
+```text
 ├── backend/                  # FastAPI Application
 │   ├── app/
 │   │   ├── main.py          # Application entry point & CORS
@@ -40,35 +44,86 @@ An AI-powered system designed to detect environmental violations (such as vehicl
 │   │   └── main.jsx          # App entry point
 │   ├── package.json
 │   └── vite.config.js
+├── ml-pipeline/              # YOLO Detection & ANPR Pipeline
+│   ├── anpr_engine.py       # Core detection and plate extraction script
+│   ├── test_pipeline.py     # Pipeline testing script
+│   └── best.pt              # Trained YOLO model weights (Ignored by Git, see setup)
 ├── README.md
 └── .gitignore
+```
 
-Local Setup & Installation
-Prerequisites
-Python 3.10+
-PostgreSQL server running locally
-Backend Setup
-Navigate to the backend directory:
-cd backend
-Create and activate a virtual environment:(windows)
-python -m venv venv
-venv\Scripts\activate
-Install dependencies:
-pip install -r requirements.txt
-Environment Variables:
-Create a .env file inside the backend/ directory with your PostgreSQL connection string:
-DATABASE_URL=postgresql://violation_user:ouurpass@localhost:5432/violation_db
-Start the API Server:
-uvicorn app.main:app --reload
-Interactive API Documentation:
-Once running, access the interactive Swagger docs at:
-Swagger UI: http://127.0.0.1:8000/docs
-Health Check: http://127.0.0.1:8000/health
+## Local Setup & Installation
 
-Frontend Setup
-Navigate to the frontend directory:
+### Prerequisites
+
+- Python 3.10+
+- PostgreSQL server running locally
+
+### Backend Setup
+
+1. Navigate to the backend directory:
+   ```bash
+   cd backend
+   ```
+2. Create and activate a virtual environment (Windows):
+   ```bash
+   python -m venv venv
+   venv\Scripts\activate
+   ```
+3. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. **Environment Variables:** Create a `.env` file inside the `backend/` directory with your PostgreSQL connection string:
+   ```
+   DATABASE_URL=postgresql://violation_user:ouurpass@localhost:5432/violation_db
+   ```
+5. Start the API server:
+   ```bash
+   uvicorn app.main:app --reload
+   ```
+6. **Interactive API Documentation:** Once running, access the interactive Swagger docs at:
+   - Swagger UI: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+   - Health Check: [http://127.0.0.1:8000/health](http://127.0.0.1:8000/health)
+
+### Frontend Setup
+
+1. Navigate to the frontend directory:
+   ```bash
    cd frontend
-Install dependencies:
+   ```
+2. Install dependencies:
+   ```bash
    npm install
-Start the dev server:
+   ```
+3. Start the dev server:
+   ```bash
    npm run dev
+   ```
+
+### ML Pipeline Setup
+
+1. Navigate to the ml-pipeline directory:
+   ```bash
+   cd ml-pipeline
+   ```
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. **Download the Model:** Download `license_plate_detector.pt` from the [Automatic-License-Plate-Recognition-using-YOLOv8](https://github.com/Muhammad-Zeerak-Khan/Automatic-License-Plate-Recognition-using-YOLOv8) repo by Muhammad-Zeerak-Khan:
+   ```
+   https://github.com/Muhammad-Zeerak-Khan/Automatic-License-Plate-Recognition-using-YOLOv8/raw/main/license_plate_detector.pt
+   ```
+   Rename it to `best.pt` and place it directly inside the `ml-pipeline/` directory.
+
+   > Note: this is a general-purpose plate detector trained on Roboflow's public `license-plate-recognition-rxg4e` dataset — not Pakistan-specific.
+
+4. Run the testing script:
+   ```bash
+   python test_pipeline.py
+   ```
+5. Run the ANPR engine:
+   ```bash
+   python anpr_engine.py
+   ```

@@ -1,0 +1,6 @@
+fast_plate_ocr==1.1.0
+opencv_python==5.0.0.93
+opencv_python_headless==5.0.0.93
+python-dotenv==1.2.3
+Requests==2.34.2
+ultralytics==8.4.133
