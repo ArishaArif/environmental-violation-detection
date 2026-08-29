@@ -16,7 +16,6 @@ An AI-powered system designed to detect environmental violations (such as vehicl
           ▼  (GET /incidents/)
   [ Frontend Dashboard ]
 
-Project Structure
 ├── backend/                  # FastAPI Application
 │   ├── app/
 │   │   ├── main.py          # Application entry point & CORS
@@ -27,6 +26,20 @@ Project Structure
 │   │       └── incidents.py # Incident CRUD API endpoints
 │   ├── .env                 # Local environment variables (ignored by git)
 │   └── requirements.txt     # Python dependencies
+├── frontend/                 # React Dashboard (Vite)
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── layout/       # TopBar, AppLayout
+│   │   │   ├── incidents/    # IncidentCard, StatusButtonGroup, ViolationTag, PlateReadout
+│   │   │   └── map/          # ViolationMap, MapLegend
+│   │   ├── pages/            # FullConsole, IncidentDetail, ExpandedMap
+│   │   ├── lib/               # incidents.js — shared formatting/labels
+│   │   ├── mock/              # incidents.mock.json — local mock data
+│   │   ├── theme/             # tokens.css — design tokens
+│   │   ├── App.jsx           # Route definitions
+│   │   └── main.jsx          # App entry point
+│   ├── package.json
+│   └── vite.config.js
 ├── README.md
 └── .gitignore
 
@@ -52,3 +65,10 @@ Once running, access the interactive Swagger docs at:
 Swagger UI: http://127.0.0.1:8000/docs
 Health Check: http://127.0.0.1:8000/health
 
+Frontend Setup
+Navigate to the frontend directory:
+   cd frontend
+Install dependencies:
+   npm install
+Start the dev server:
+   npm run dev
