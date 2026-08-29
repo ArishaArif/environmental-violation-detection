@@ -1,6 +1,6 @@
 # Environmental Violation Detection System
 
-An AI-powered system designed to detect environmental violations (such as vehicle littering and exhaust smoke) from CCTV footage, extract license plate numbers using ANPR, and log incidents into a central management dashboard.
+An AI-powered system designed to detect environmental violations (such as vehicle littering) from CCTV footage, extract license plate numbers using ANPR, and log incidents into a central management dashboard.
 
 ---
 
