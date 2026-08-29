@@ -1,0 +1,25 @@
+.violation-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px var(--space-2);
+  border: 1px solid var(--violation-color, var(--accent-orange));
+  border-radius: var(--radius-sm);
+  background: var(--violation-tint, var(--tint-orange));
+  color: var(--violation-color, var(--accent-orange));
+  font-family: var(--font-display);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.violation-tag[data-violation='littering'] {
+  --violation-color: var(--violation-litter);
+  --violation-tint: var(--tint-blue);
+}
+
+.violation-tag[data-violation='smoke'] {
+  --violation-color: var(--violation-smoke);
+  --violation-tint: var(--tint-yellow);
+}

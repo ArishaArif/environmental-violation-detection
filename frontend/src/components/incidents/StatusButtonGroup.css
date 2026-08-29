@@ -1,0 +1,64 @@
+.status-buttons {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.status-buttons__btn {
+  flex: 1 1 0;
+  padding: var(--space-3) var(--space-2);
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: filter 120ms ease, opacity 120ms ease;
+}
+
+.status-buttons__btn:hover {
+  filter: brightness(1.12);
+}
+
+.status-buttons__btn:active {
+  filter: brightness(0.95);
+}
+
+.status-buttons__btn:focus-visible {
+  outline: 2px solid var(--text-primary);
+  outline-offset: -2px;
+}
+
+.status-buttons__btn--accept {
+  background: var(--action-accept);
+}
+
+.status-buttons__btn--investigate {
+  background: var(--action-investigate);
+}
+
+.status-buttons__btn--reject {
+  background: var(--action-reject);
+}
+
+.status-buttons__btn.is-active {
+  box-shadow: inset 0 0 0 2px var(--text-primary);
+}
+
+.status-buttons:has(.is-active) .status-buttons__btn:not(.is-active) {
+  opacity: 0.45;
+}
+
+.status-buttons--lg {
+  gap: var(--space-3);
+}
+
+.status-buttons--lg .status-buttons__btn {
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: var(--fs-md);
+  letter-spacing: var(--ls-wide);
+}

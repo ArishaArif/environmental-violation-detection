@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import IncidentCard from '../components/incidents/IncidentCard'
+import ViolationMap from '../components/map/ViolationMap'
 import mockIncidents from '../mock/incidents.mock.json'
 import './FullConsole.css'
 
@@ -82,9 +83,7 @@ function FullConsole() {
           <h2 className="full-console__section-title">Lahore Active Violation Plot</h2>
         </div>
         <div className="full-console__map-body">
-          <div className="full-console__map-placeholder">
-            <span className="full-console__map-placeholder-label">Map Placeholder</span>
-          </div>
+          <ViolationMap incidents={incidents} />
         </div>
       </section>
     </div>

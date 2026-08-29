@@ -1,46 +1,8 @@
 import { useState } from 'react'
+import ViolationTag from './ViolationTag'
+import StatusButtonGroup from './StatusButtonGroup'
+import { STATUS_LABELS, formatTimeAgo, formatConfidence, evidenceSrc } from '../../lib/incidents'
 import './IncidentCard.css'
-
-const VIOLATIONS = {
-  littering: { label: 'Litter Violation' },
-  smoke: { label: 'Smoke Emission' },
-}
-
-const STATUS_ACTIONS = [
-  { status: 'accepted', label: 'Accept', modifier: 'accept' },
-  { status: 'needs_investigation', label: 'Investigate', modifier: 'investigate' },
-  { status: 'rejected', label: 'Reject', modifier: 'reject' },
-]
-
-const STATUS_LABELS = {
-  pending: 'Pending',
-  accepted: 'Accepted',
-  needs_investigation: 'Investigating',
-  rejected: 'Rejected',
-}
-
-function formatTimeAgo(timestamp) {
-  if (timestamp == null) return ''
-  const then = new Date(timestamp).getTime()
-  if (Number.isNaN(then)) return ''
-
-  const seconds = Math.max(0, Math.round((Date.now() - then) / 1000))
-  if (seconds < 60) return `${seconds}s ago`
-
-  const minutes = Math.floor(seconds / 60)
-  if (minutes < 60) return `${minutes}m ago`
-
-  const hours = Math.floor(minutes / 60)
-  if (hours < 24) return `${hours}h ago`
-
-  const days = Math.floor(hours / 24)
-  return `${days}d ago`
-}
-
-function formatConfidence(value) {
-  if (value == null || Number.isNaN(value)) return ''
-  return `${Math.round(value * 100)}%`
-}
 
 function IncidentCard({ incident, onStatusChange }) {
   const {
@@ -49,28 +11,23 @@ function IncidentCard({ incident, onStatusChange }) {
     violation_type,
     timestamp,
     confidence,
-    evidence_path,
     review_status,
   } = incident
 
   const [thumbFailed, setThumbFailed] = useState(false)
 
-  const violation = VIOLATIONS[violation_type] ?? { label: violation_type }
   const timeAgo = formatTimeAgo(timestamp)
   const incidentId = `INC-${id}`
   const plateLabel = plate_number ?? 'No Plate'
   const confidenceLabel = formatConfidence(confidence)
   const statusLabel = STATUS_LABELS[review_status] ?? review_status
-  const showThumb = Boolean(evidence_path) && !thumbFailed
+  const thumbSrc = evidenceSrc(incident)
+  const showThumb = Boolean(thumbSrc) && !thumbFailed
 
   return (
-    <article
-      className="incident-card"
-      data-violation={violation_type}
-      data-status={review_status}
-    >
+    <article className="incident-card" data-status={review_status}>
       <header className="incident-card__head">
-        <span className="incident-card__badge">{violation.label}</span>
+        <ViolationTag violationType={violation_type} />
         <div className="incident-card__head-right">
           <span className="incident-card__status">{statusLabel}</span>
           <span className="incident-card__id">{incidentId}</span>
@@ -82,7 +39,7 @@ function IncidentCard({ incident, onStatusChange }) {
           {showThumb ? (
             <img
               className="incident-card__thumb-img"
-              src={evidence_path}
+              src={thumbSrc}
               alt={`Evidence for ${plateLabel}`}
               onError={() => setThumbFailed(true)}
             />
@@ -101,22 +58,10 @@ function IncidentCard({ incident, onStatusChange }) {
         </div>
       </div>
 
-      <div className="incident-card__actions">
-        {STATUS_ACTIONS.map((action) => {
-          const isActive = review_status === action.status
-          return (
-            <button
-              key={action.status}
-              type="button"
-              className={`incident-card__btn incident-card__btn--${action.modifier}${isActive ? ' is-active' : ''}`}
-              aria-pressed={isActive}
-              onClick={() => onStatusChange?.(id, action.status)}
-            >
-              {action.label}
-            </button>
-          )
-        })}
-      </div>
+      <StatusButtonGroup
+        status={review_status}
+        onChange={(newStatus) => onStatusChange?.(id, newStatus)}
+      />
     </article>
   )
 }

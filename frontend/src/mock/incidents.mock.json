@@ -9,6 +9,7 @@
     "plate_confidence": 0.94,
     "confidence": 0.91,
     "evidence_path": "http://localhost:8000/evidence/frame_001.jpg",
+    "evidence_url": "https://picsum.photos/seed/8821/640/360",
     "review_status": "pending"
   },
   {
@@ -21,6 +22,7 @@
     "plate_confidence": 0.88,
     "confidence": 0.83,
     "evidence_path": "http://localhost:8000/evidence/frame_002.jpg",
+    "evidence_url": "https://picsum.photos/seed/8822/640/360",
     "review_status": "pending"
   },
   {
@@ -33,6 +35,7 @@
     "plate_confidence": 0.96,
     "confidence": 0.94,
     "evidence_path": "http://localhost:8000/evidence/frame_003.jpg",
+    "evidence_url": "https://picsum.photos/seed/8823/640/360",
     "review_status": "accepted"
   },
   {
@@ -45,6 +48,7 @@
     "plate_confidence": null,
     "confidence": 0.72,
     "evidence_path": "http://localhost:8000/evidence/frame_004.jpg",
+    "evidence_url": "https://picsum.photos/seed/8824/640/360",
     "review_status": "needs_investigation"
   },
   {
@@ -57,6 +61,7 @@
     "plate_confidence": 0.79,
     "confidence": 0.81,
     "evidence_path": "http://localhost:8000/evidence/frame_005.jpg",
+    "evidence_url": "https://picsum.photos/seed/8825/640/360",
     "review_status": "rejected"
   },
   {
@@ -69,6 +74,7 @@
     "plate_confidence": 0.91,
     "confidence": 0.89,
     "evidence_path": "http://localhost:8000/evidence/frame_006.jpg",
+    "evidence_url": "https://picsum.photos/seed/8826/640/360",
     "review_status": "accepted"
   },
   {
@@ -81,6 +87,7 @@
     "plate_confidence": 0.85,
     "confidence": 0.77,
     "evidence_path": "http://localhost:8000/evidence/frame_007.jpg",
+    "evidence_url": "https://picsum.photos/seed/8827/640/360",
     "review_status": "pending"
   },
   {
@@ -93,6 +100,7 @@
     "plate_confidence": 0.63,
     "confidence": 0.68,
     "evidence_path": "http://localhost:8000/evidence/frame_008.jpg",
+    "evidence_url": "https://picsum.photos/seed/8828/640/360",
     "review_status": "needs_investigation"
   },
   {
@@ -105,6 +113,7 @@
     "plate_confidence": null,
     "confidence": 0.74,
     "evidence_path": "http://localhost:8000/evidence/frame_009.jpg",
+    "evidence_url": "https://picsum.photos/seed/8829/640/360",
     "review_status": "rejected"
   }
 ]
