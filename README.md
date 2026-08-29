@@ -52,6 +52,10 @@ An AI-powered system designed to detect environmental violations (such as vehicl
 └── .gitignore
 ```
 
+## 📊 Dataset
+
+The dataset used for the ANPR pipeline can be downloaded from [Google Drive](https://drive.google.com/drive/folders/15qSww4dpWfHkXgoQUGw79VJf8V02_td0?usp=sharing).
+
 ## Local Setup & Installation
 
 ### Prerequisites
@@ -123,6 +127,11 @@ An AI-powered system designed to detect environmental violations (such as vehicl
    ```bash
    python test_pipeline.py
    ```
+5. Run the ANPR engine:
+   ```bash
+   python anpr_engine.py
+   ```
+
 5. Run the ANPR engine:
    ```bash
    python anpr_engine.py
