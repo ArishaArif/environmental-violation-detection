@@ -167,7 +167,7 @@ produces the candidate incidents that `anpr_engine.py` reads plates from and
 │   ├── verify_candidates.py       # Saves annotated frames for candidate review
 │   ├── inspect_model.py           # Utility: prints a YOLO model's class list
 │   ├── report_littering.py        # candidates.csv + boxes.csv → ANPR → POST /incidents/
-│   └── vehicle_model.pt           # Vehicle-type YOLO model — see Dataset below
+│   └── modelbest.pt               # Vehicle-type YOLO model — see Dataset below
 │                                   # ⚠️ NOT the same file as license_plate_detector.pt —
 │                                   #    keep filenames distinct, do not both save as best.pt
 ├── boxes.csv                      # generated
@@ -181,13 +181,13 @@ produces the candidate incidents that `anpr_engine.py` reads plates from and
 The custom vehicle-type model (Auto-Rickshaw, Bike, Bus, Car, HCV, LCV, Toto,
 Smoke classes) can be downloaded from [Google Drive](https://drive.google.com/drive/folders/1hE_iYE2TQKnzzMZWv9NJxmUBXncqiwLo?usp=sharing).
 
-> ⚠️ Save this as `vehicle_model.pt` (or similarly distinct name) inside
-> `ml-pipeline/` — **do not name it `best.pt`**, since that filename is
-> already used by the ANPR license plate detector in this repo.
+> ⚠️ Save this as `modelbest.pt` inside `ml-pipeline/` — **do not name it
+> `best.pt`**, since that filename is already used by the ANPR license
+> plate detector in this repo.
 
 To verify a model's class list before using it:
 ```bash
-python inspect_model.py --weights vehicle_model.pt
+python inspect_model.py --weights modelbest.pt
 ```
 
 ### 🛠 Setup
@@ -209,7 +209,7 @@ python inspect_model.py --weights vehicle_model.pt
 python detect.py
 
 # 2. Extract vehicle boxes to CSV
-python extract_boxes.py --source littering_sample.mp4 --out boxes.csv --weights vehicle_model.pt
+python extract_boxes.py --source littering_sample.mp4 --out boxes.csv --weights modelbest.pt
 
 # 3. Run the littering heuristic
 python detect_littering.py --source littering_sample.mp4 --boxes boxes.csv
@@ -244,8 +244,3 @@ python report_littering.py --source littering_sample.mp4
   (e.g. MoViNet) once labeled littering clips are available.
 - Camera-motion compensation so non-static footage can be used.
 - Real GPS/location tagging per camera/deployment site.
-
-5. Run the ANPR engine:
-   ```bash
-   python anpr_engine.py
-   ```
