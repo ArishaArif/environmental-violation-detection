@@ -4,7 +4,8 @@
 
 :root {
   --bg-base:          #0A0E13;               
-  --bg-panel:         #121821;  
+  --bg-panel:         #121821;
+  --bg-panel-raised:  #1A222D;
   --border-subtle:    #232C38;  
   --accent-orange:    #E85D2C;  
   --accent-blue:      #3B82F6;  
@@ -18,7 +19,6 @@
   --text-secondary:   #8892A0;  
 
   --violation-litter:   var(--accent-blue);
-  --violation-smoke:    var(--accent-yellow);
   --marker-new:         var(--accent-orange);
   --action-accept:      var(--status-green);
   --action-investigate: var(--accent-yellow);
@@ -31,6 +31,7 @@
   --tint-yellow: rgba(201, 162, 39, 0.16);
   --tint-green:  rgba(62, 123, 79, 0.20);
   --tint-red:    rgba(168, 58, 58, 0.20);
+  --tint-slate:  rgba(136, 146, 160, 0.14);
 
   --font-display: 'Chakra Petch', 'Rajdhani', ui-sans-serif, system-ui, sans-serif;     
   --font-body:    'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;      

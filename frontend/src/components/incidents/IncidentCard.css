@@ -31,6 +31,11 @@
   --status-tint: var(--tint-red);
 }
 
+.incident-card[data-status='unknown'] {
+  --status-color: var(--text-secondary);
+  --status-tint: var(--tint-slate);
+}
+
 .incident-card__head {
   display: flex;
   align-items: center;
@@ -142,4 +147,60 @@
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.incident-card__error {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-sm);
+  background: var(--tint-red);
+  color: var(--status-red);
+  font-family: var(--font-display);
+  font-size: var(--fs-2xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.incident-card[data-update-failed='true'] {
+  animation: incident-card-flash 900ms ease;
+}
+
+@keyframes incident-card-flash {
+  0% {
+    box-shadow: 0 0 0 1px var(--status-red), var(--shadow-panel);
+  }
+  100% {
+    box-shadow: var(--shadow-panel);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .incident-card[data-update-failed='true'] {
+    animation: none;
+  }
+}
+
+.incident-card[data-new='true'] {
+  animation: incident-card-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes incident-card-pulse {
+  0%,
+  100% {
+    box-shadow: var(--shadow-panel);
+  }
+  50% {
+    box-shadow: 0 0 0 1px var(--marker-new), 0 0 14px rgba(232, 93, 44, 0.5),
+      var(--shadow-panel);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .incident-card[data-new='true'] {
+    animation: none;
+    box-shadow: 0 0 0 1px var(--marker-new), var(--shadow-panel);
+  }
 }

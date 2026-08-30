@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import mockIncidents from '../mock/incidents.mock.json'
 import ViolationTag from '../components/incidents/ViolationTag'
 import StatusButtonGroup from '../components/incidents/StatusButtonGroup'
 import PlateReadout from '../components/incidents/PlateReadout'
-import { formatTimeAgo, evidenceSrc } from '../lib/incidents'
+import { updateIncidentStatus } from '../api/incidents'
+import { formatTimeAgo, evidenceSrc, REVIEW_STATUSES } from '../lib/incidents'
 import './IncidentDetail.css'
 
 function findIncident(idParam) {
@@ -50,6 +51,8 @@ function IncidentDetail() {
   const { id } = useParams()
   const incident = findIncident(id)
   const [overrides, setOverrides] = useState({})
+  const [updateError, setUpdateError] = useState(null)
+  const errorTimer = useRef(null)
 
   if (!incident) {
     return (
@@ -72,8 +75,24 @@ function IncidentDetail() {
   const incidentId = `INC-${incident.id}`
   const timeAgo = formatTimeAgo(incident.timestamp)
   const status = overrides[incident.id] ?? incident.review_status
-  const setStatus = (next) =>
+
+  const handleStatusChange = (next) => {
+    if (!REVIEW_STATUSES.includes(next)) return
+
+    const previousStatus = status
+    if (previousStatus === next) return
+
     setOverrides((prev) => ({ ...prev, [incident.id]: next }))
+    if (errorTimer.current) window.clearTimeout(errorTimer.current)
+    setUpdateError(null)
+
+    updateIncidentStatus(incident.id, next).catch((err) => {
+      console.warn('Status update failed; reverting.', err)
+      setOverrides((prev) => ({ ...prev, [incident.id]: previousStatus }))
+      setUpdateError(err.message)
+      errorTimer.current = window.setTimeout(() => setUpdateError(null), 4000)
+    })
+  }
 
   return (
     <section className="incident-detail">
@@ -127,7 +146,12 @@ function IncidentDetail() {
 
         <div className="incident-detail__actions">
           <span className="incident-detail__actions-label">Dispatch Decision</span>
-          <StatusButtonGroup size="lg" status={status} onChange={setStatus} />
+          {updateError ? (
+            <span className="incident-detail__update-error" role="alert" title={updateError}>
+              Update failed — reverted
+            </span>
+          ) : null}
+          <StatusButtonGroup size="lg" status={status} onChange={handleStatusChange} />
         </div>
       </div>
     </section>

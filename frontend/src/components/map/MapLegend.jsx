@@ -2,7 +2,6 @@ import './MapLegend.css'
 
 const LEGEND_ITEMS = [
   { id: 'litter', label: 'Litter Detected', shape: 'square', tone: 'litter' },
-  { id: 'smoke', label: 'Smoke Detected', shape: 'diamond', tone: 'smoke' },
   { id: 'new', label: 'Pulsing New Arrivals', shape: 'pulse', tone: 'new' },
 ]
 

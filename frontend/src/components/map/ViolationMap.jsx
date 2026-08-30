@@ -8,8 +8,26 @@ import './ViolationMap.css'
 const LAHORE_CENTER = [31.5204, 74.3587]
 const DEFAULT_ZOOM = 12
 
-const CAMERAS_ACTIVE = 24
-const HOURLY_RATE = [4, 6, 3, 7, 5, 8, 6, 9, 7, 6, 8, 5]
+function distinctCameraCount(incidents) {
+  const cameras = new Set()
+  incidents.forEach((incident) => {
+    const lat = Number(incident?.location_lat)
+    const lng = Number(incident?.location_lng)
+    if (Number.isNaN(lat) || Number.isNaN(lng)) return
+    cameras.add(`${lat.toFixed(4)}, ${lng.toFixed(4)}`)
+  })
+  return cameras.size
+}
+
+function hourlyCounts(incidents) {
+  const buckets = Array.from({ length: 24 }, () => 0)
+  incidents.forEach((incident) => {
+    const then = new Date(incident?.timestamp)
+    if (Number.isNaN(then.getTime())) return
+    buckets[then.getHours()] += 1
+  })
+  return buckets
+}
 
 const MARKER_ICONS = {
   littering: L.divIcon({
@@ -18,15 +36,17 @@ const MARKER_ICONS = {
     iconSize: [22, 22],
     iconAnchor: [11, 11],
   }),
-  smoke: L.divIcon({
-    className: 'violation-pin',
-    html: '<span class="violation-pin__shape violation-pin__shape--smoke"></span>',
-    iconSize: [22, 22],
-    iconAnchor: [11, 11],
-  }),
 }
 
-function iconFor(violationType) {
+const NEW_MARKER_ICON = L.divIcon({
+  className: 'violation-pin violation-pin--new',
+  html: '<span class="violation-pin__ping" aria-hidden="true"></span><span class="violation-pin__shape violation-pin__shape--litter"></span>',
+  iconSize: [22, 22],
+  iconAnchor: [11, 11],
+})
+
+function iconFor(violationType, isNew) {
+  if (isNew) return NEW_MARKER_ICON
   return MARKER_ICONS[violationType] ?? MARKER_ICONS.littering
 }
 
@@ -37,20 +57,20 @@ function hasCoordinates(incident) {
   )
 }
 
-function HourlyRateChart() {
-  const peak = Math.max(...HOURLY_RATE, 1)
+function HourlyRateChart({ data }) {
+  const peak = Math.max(...data, 1)
   return (
     <div
       className="hourly-chart"
       role="img"
-      aria-label="Hourly violation rate over the last twelve hours"
+      aria-label="Hourly violation rate by hour of day"
     >
-      {HOURLY_RATE.map((value, index) => (
+      {data.map((value, index) => (
         <div
           className="hourly-chart__bar"
           key={index}
           style={{ height: `${Math.max(8, (value / peak) * 100)}%` }}
-          title={`${value} violations`}
+          title={`${String(index).padStart(2, '0')}:00 — ${value} violations`}
         />
       ))}
     </div>
@@ -72,7 +92,7 @@ function StatTile({ tone, label, value }) {
   )
 }
 
-function ViolationMap({ incidents = [] }) {
+function ViolationMap({ incidents = [], newIds = {} }) {
   const plotted = incidents.filter(hasCoordinates)
 
   const litterDetected = incidents.filter(
@@ -84,6 +104,9 @@ function ViolationMap({ incidents = [] }) {
       incident.review_status === 'pending' ||
       incident.review_status === 'needs_investigation',
   ).length
+
+  const camerasActive = distinctCameraCount(incidents)
+  const hourly = hourlyCounts(incidents)
 
   return (
     <div className="violation-map">
@@ -104,7 +127,7 @@ function ViolationMap({ incidents = [] }) {
             <Marker
               key={incident.id}
               position={[incident.location_lat, incident.location_lng]}
-              icon={iconFor(incident.violation_type)}
+              icon={iconFor(incident.violation_type, Boolean(newIds[incident.id]))}
             >
               <Tooltip
                 className="violation-tooltip"
@@ -128,13 +151,13 @@ function ViolationMap({ incidents = [] }) {
 
       <div className="violation-map__stats">
         <StatTile tone="litter" label="Litter Detected" value={litterDetected} />
-        <StatTile tone="cameras" label="Cameras Active" value={CAMERAS_ACTIVE} />
+        <StatTile tone="cameras" label="Cameras Active" value={camerasActive} />
         <StatTile tone="alerts" label="Unresolved Alerts" value={unresolvedAlerts} />
         <div className="stat-tile stat-tile--chart">
           <div className="stat-tile__head">
             <span className="stat-tile__label">Hourly Rate</span>
           </div>
-          <HourlyRateChart />
+          <HourlyRateChart data={hourly} />
         </div>
       </div>
     </div>

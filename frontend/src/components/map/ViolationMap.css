@@ -22,11 +22,36 @@
 }
 
 .violation-pin {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   background: transparent;
   border: none;
+}
+
+.violation-pin__ping {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 13px;
+  height: 13px;
+  transform: translate(-50%, -50%);
+  border: 1.5px solid var(--marker-new);
+  border-radius: 3px;
+  pointer-events: none;
+  animation: violation-pin-ping 1.5s ease-out infinite;
+}
+
+@keyframes violation-pin-ping {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2.8);
+    opacity: 0;
+  }
 }
 
 .violation-pin__shape {
@@ -41,15 +66,6 @@
   border: 1px solid rgba(242, 244, 247, 0.85);
   border-radius: 2px;
   box-shadow: 0 0 0 1px rgba(10, 14, 19, 0.55), 0 0 8px rgba(59, 130, 246, 0.45);
-}
-
-.violation-pin__shape--smoke {
-  width: 12px;
-  height: 12px;
-  background: var(--accent-yellow);
-  border: 1px solid rgba(242, 244, 247, 0.85);
-  transform: rotate(45deg);
-  box-shadow: 0 0 0 1px rgba(10, 14, 19, 0.55), 0 0 8px rgba(201, 162, 39, 0.45);
 }
 
 .violation-tooltip.leaflet-tooltip {
@@ -212,5 +228,10 @@
 @media (prefers-reduced-motion: reduce) {
   .hourly-chart__bar {
     transition: none;
+  }
+
+  .violation-pin__ping {
+    animation: none;
+    opacity: 0.9;
   }
 }

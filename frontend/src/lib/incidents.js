@@ -1,6 +1,6 @@
 export const VIOLATION_LABELS = {
   littering: 'Litter Violation',
-  smoke: 'Smoke Emission',
+  unknown: 'Unknown',
 }
 
 export const STATUS_LABELS = {
@@ -8,6 +8,7 @@ export const STATUS_LABELS = {
   accepted: 'Accepted',
   needs_investigation: 'Investigating',
   rejected: 'Rejected',
+  unknown: 'Unknown',
 }
 
 export const STATUS_ACTIONS = [
@@ -15,6 +16,26 @@ export const STATUS_ACTIONS = [
   { status: 'needs_investigation', label: 'Investigate', modifier: 'investigate' },
   { status: 'rejected', label: 'Reject', modifier: 'reject' },
 ]
+
+export const VIOLATION_TYPES = ['littering']
+
+export const REVIEW_STATUSES = ['pending', 'accepted', 'rejected', 'needs_investigation']
+
+export function normalizeViolationType(value) {
+  return VIOLATION_TYPES.includes(value) ? value : 'unknown'
+}
+
+export function normalizeStatus(value) {
+  return REVIEW_STATUSES.includes(value) ? value : 'unknown'
+}
+
+export function normalizeIncident(incident) {
+  return {
+    ...incident,
+    violation_type: normalizeViolationType(incident?.violation_type),
+    review_status: normalizeStatus(incident?.review_status),
+  }
+}
 
 export function formatTimeAgo(timestamp) {
   if (timestamp == null) return ''

@@ -4,7 +4,7 @@ import StatusButtonGroup from './StatusButtonGroup'
 import { STATUS_LABELS, formatTimeAgo, formatConfidence, evidenceSrc } from '../../lib/incidents'
 import './IncidentCard.css'
 
-function IncidentCard({ incident, onStatusChange }) {
+function IncidentCard({ incident, onStatusChange, updateError, isNew }) {
   const {
     id,
     plate_number,
@@ -25,10 +25,20 @@ function IncidentCard({ incident, onStatusChange }) {
   const showThumb = Boolean(thumbSrc) && !thumbFailed
 
   return (
-    <article className="incident-card" data-status={review_status}>
+    <article
+      className="incident-card"
+      data-status={review_status}
+      data-update-failed={updateError ? 'true' : undefined}
+      data-new={isNew ? 'true' : undefined}
+    >
       <header className="incident-card__head">
         <ViolationTag violationType={violation_type} />
         <div className="incident-card__head-right">
+          {updateError ? (
+            <span className="incident-card__error" role="alert" title={updateError}>
+              Update failed
+            </span>
+          ) : null}
           <span className="incident-card__status">{statusLabel}</span>
           <span className="incident-card__id">{incidentId}</span>
         </div>
