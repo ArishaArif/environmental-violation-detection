@@ -1,8 +1,10 @@
+import { useEffect, useState } from 'react'
 import { MapContainer, TileLayer, Marker, Tooltip } from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import MapLegend from './MapLegend'
 import { VIOLATION_LABELS } from '../../lib/incidents'
+import { fetchAnalytics } from '../../api/incidents'
 import './ViolationMap.css'
 
 const LAHORE_CENTER = [31.5204, 74.3587]
@@ -77,6 +79,32 @@ function HourlyRateChart({ data }) {
   )
 }
 
+function HotspotsTile({ hotspots }) {
+  const top = [...hotspots].sort((a, b) => b.count - a.count).slice(0, 3)
+  return (
+    <div className="stat-tile stat-tile--chart">
+      <div className="stat-tile__head">
+        <span className="stat-tile__label">Top Hotspots</span>
+      </div>
+      {top.length === 0 ? (
+        <span className="hotspots-list__empty">No hotspot data yet</span>
+      ) : (
+        <ul className="hotspots-list">
+          {top.map((spot, index) => (
+            <li className="hotspots-list__row" key={`${spot.lat}-${spot.lng}`}>
+              <span className="hotspots-list__rank">{index + 1}</span>
+              <span className="hotspots-list__coords">
+                {spot.lat.toFixed(2)}, {spot.lng.toFixed(2)}
+              </span>
+              <span className="hotspots-list__count">{spot.count}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  )
+}
+
 function StatTile({ tone, label, value }) {
   return (
     <div className="stat-tile">
@@ -93,6 +121,22 @@ function StatTile({ tone, label, value }) {
 }
 
 function ViolationMap({ incidents = [], newIds = {} }) {
+  const [hotspots, setHotspots] = useState(null)
+
+  useEffect(() => {
+    let cancelled = false
+    fetchAnalytics()
+      .then((data) => {
+        if (!cancelled) setHotspots(Array.isArray(data?.by_hotspot) ? data.by_hotspot : [])
+      })
+      .catch(() => {
+        if (!cancelled) setHotspots(null)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
   const plotted = incidents.filter(hasCoordinates)
 
   const litterDetected = incidents.filter(
@@ -159,6 +203,7 @@ function ViolationMap({ incidents = [], newIds = {} }) {
           </div>
           <HourlyRateChart data={hourly} />
         </div>
+        {hotspots !== null ? <HotspotsTile hotspots={hotspots} /> : null}
       </div>
     </div>
   )

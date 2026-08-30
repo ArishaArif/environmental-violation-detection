@@ -1,0 +1,101 @@
+.expanded-map {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-base);
+}
+
+.expanded-map__badge {
+  position: absolute;
+  top: var(--space-4);
+  left: var(--space-4);
+  z-index: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 3px var(--space-2);
+  border: 1px solid var(--live-indicator);
+  border-radius: var(--radius-sm);
+  background: var(--tint-cyan);
+  color: var(--live-indicator);
+  font-family: var(--font-display);
+  font-size: var(--fs-2xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.expanded-map__badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--live-indicator);
+  box-shadow: var(--glow-cyan);
+  animation: expanded-map-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes expanded-map-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .expanded-map__badge-dot {
+    animation: none;
+  }
+}
+
+.expanded-map__banner {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: var(--space-4) var(--space-4) 0;
+  padding: var(--space-3);
+  background: var(--tint-orange);
+  border: 1px solid var(--accent-orange);
+  border-radius: var(--radius-md);
+  position: relative;
+  z-index: 400;
+}
+
+.expanded-map__banner-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-2xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--accent-orange);
+}
+
+.expanded-map__banner-text {
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-normal);
+  color: var(--text-secondary);
+}
+
+.expanded-map__state {
+  margin: auto;
+  padding: var(--space-6);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  letter-spacing: var(--ls-label);
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.expanded-map__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: var(--space-4);
+}

@@ -58,7 +58,7 @@ async function readError(res) {
 }
 
 export async function fetchAnalytics() {
-  const res = await fetch(`${API_BASE}/analytics`)
+  const res = await fetch(`${API_BASE}/analytics/`)
   if (!res.ok) {
     throw new Error(`Analytics request failed with status ${res.status}`)
   }
