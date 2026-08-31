@@ -32,6 +32,12 @@
   border-radius: 2px;
 }
 
+.map-legend__icon--diamond {
+  width: 11px;
+  height: 11px;
+  transform: rotate(45deg);
+}
+
 .map-legend__icon--pulse {
   border-radius: var(--radius-full);
 }
@@ -39,6 +45,11 @@
 .map-legend__icon--litter {
   background: var(--accent-blue);
   box-shadow: 0 0 6px rgba(59, 130, 246, 0.5);
+}
+
+.map-legend__icon--smoke {
+  background: var(--accent-yellow);
+  box-shadow: 0 0 6px rgba(201, 162, 39, 0.5);
 }
 
 .map-legend__icon--new {

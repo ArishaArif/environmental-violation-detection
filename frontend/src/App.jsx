@@ -1,3 +1,4 @@
+import 'leaflet/dist/leaflet.css'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import AppLayout from './components/layout/AppLayout'
 import FullConsole from './pages/FullConsole'

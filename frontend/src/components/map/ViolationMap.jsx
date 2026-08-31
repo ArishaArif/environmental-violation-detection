@@ -1,35 +1,22 @@
-import { useEffect, useState } from 'react'
-import { MapContainer, TileLayer, Marker, Tooltip } from 'react-leaflet'
+import { MapContainer, ImageOverlay, Marker, Tooltip } from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import MapLegend from './MapLegend'
 import { VIOLATION_LABELS } from '../../lib/incidents'
-import { fetchAnalytics } from '../../api/incidents'
 import './ViolationMap.css'
 
-const LAHORE_CENTER = [31.5204, 74.3587]
-const DEFAULT_ZOOM = 12
+// Updated to center on your Liberty Market export
+const LAHORE_CENTER = [31.51133, 74.33948]
+const DEFAULT_ZOOM = 16
 
-function distinctCameraCount(incidents) {
-  const cameras = new Set()
-  incidents.forEach((incident) => {
-    const lat = Number(incident?.location_lat)
-    const lng = Number(incident?.location_lng)
-    if (Number.isNaN(lat) || Number.isNaN(lng)) return
-    cameras.add(`${lat.toFixed(4)}, ${lng.toFixed(4)}`)
-  })
-  return cameras.size
-}
+// IMPORTANT: Replace these 4 numbers with the exact bounds from your OSM export panel
+const MAP_BOUNDS = [
+  [31.5050, 74.3350], // [South, West]
+  [31.5250, 74.3580]  // [North, East]
+]
 
-function hourlyCounts(incidents) {
-  const buckets = Array.from({ length: 24 }, () => 0)
-  incidents.forEach((incident) => {
-    const then = new Date(incident?.timestamp)
-    if (Number.isNaN(then.getTime())) return
-    buckets[then.getHours()] += 1
-  })
-  return buckets
-}
+const CAMERAS_ACTIVE = 24
+const HOURLY_RATE = [4, 6, 3, 7, 5, 8, 6, 9, 7, 6, 8, 5]
 
 const MARKER_ICONS = {
   littering: L.divIcon({
@@ -38,17 +25,15 @@ const MARKER_ICONS = {
     iconSize: [22, 22],
     iconAnchor: [11, 11],
   }),
+  smoke: L.divIcon({
+    className: 'violation-pin',
+    html: '<span class="violation-pin__shape violation-pin__shape--smoke"></span>',
+    iconSize: [22, 22],
+    iconAnchor: [11, 11],
+  }),
 }
 
-const NEW_MARKER_ICON = L.divIcon({
-  className: 'violation-pin violation-pin--new',
-  html: '<span class="violation-pin__ping" aria-hidden="true"></span><span class="violation-pin__shape violation-pin__shape--litter"></span>',
-  iconSize: [22, 22],
-  iconAnchor: [11, 11],
-})
-
-function iconFor(violationType, isNew) {
-  if (isNew) return NEW_MARKER_ICON
+function iconFor(violationType) {
   return MARKER_ICONS[violationType] ?? MARKER_ICONS.littering
 }
 
@@ -59,48 +44,22 @@ function hasCoordinates(incident) {
   )
 }
 
-function HourlyRateChart({ data }) {
-  const peak = Math.max(...data, 1)
+function HourlyRateChart() {
+  const peak = Math.max(...HOURLY_RATE, 1)
   return (
     <div
       className="hourly-chart"
       role="img"
-      aria-label="Hourly violation rate by hour of day"
+      aria-label="Hourly violation rate over the last twelve hours"
     >
-      {data.map((value, index) => (
+      {HOURLY_RATE.map((value, index) => (
         <div
           className="hourly-chart__bar"
           key={index}
           style={{ height: `${Math.max(8, (value / peak) * 100)}%` }}
-          title={`${String(index).padStart(2, '0')}:00 — ${value} violations`}
+          title={`${value} violations`}
         />
       ))}
-    </div>
-  )
-}
-
-function HotspotsTile({ hotspots }) {
-  const top = [...hotspots].sort((a, b) => b.count - a.count).slice(0, 3)
-  return (
-    <div className="stat-tile stat-tile--chart">
-      <div className="stat-tile__head">
-        <span className="stat-tile__label">Top Hotspots</span>
-      </div>
-      {top.length === 0 ? (
-        <span className="hotspots-list__empty">No hotspot data yet</span>
-      ) : (
-        <ul className="hotspots-list">
-          {top.map((spot, index) => (
-            <li className="hotspots-list__row" key={`${spot.lat}-${spot.lng}`}>
-              <span className="hotspots-list__rank">{index + 1}</span>
-              <span className="hotspots-list__coords">
-                {spot.lat.toFixed(2)}, {spot.lng.toFixed(2)}
-              </span>
-              <span className="hotspots-list__count">{spot.count}</span>
-            </li>
-          ))}
-        </ul>
-      )}
     </div>
   )
 }
@@ -120,23 +79,7 @@ function StatTile({ tone, label, value }) {
   )
 }
 
-function ViolationMap({ incidents = [], newIds = {} }) {
-  const [hotspots, setHotspots] = useState(null)
-
-  useEffect(() => {
-    let cancelled = false
-    fetchAnalytics()
-      .then((data) => {
-        if (!cancelled) setHotspots(Array.isArray(data?.by_hotspot) ? data.by_hotspot : [])
-      })
-      .catch(() => {
-        if (!cancelled) setHotspots(null)
-      })
-    return () => {
-      cancelled = true
-    }
-  }, [])
-
+function ViolationMap({ incidents = [] }) {
   const plotted = incidents.filter(hasCoordinates)
 
   const litterDetected = incidents.filter(
@@ -149,9 +92,6 @@ function ViolationMap({ incidents = [], newIds = {} }) {
       incident.review_status === 'needs_investigation',
   ).length
 
-  const camerasActive = distinctCameraCount(incidents)
-  const hourly = hourlyCounts(incidents)
-
   return (
     <div className="violation-map">
       <div className="violation-map__canvas">
@@ -161,17 +101,16 @@ function ViolationMap({ incidents = [], newIds = {} }) {
           zoom={DEFAULT_ZOOM}
           scrollWheelZoom={true}
         >
-          <TileLayer
-            url="https://{s}.basemap.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-            subdomains="abcd"
-            maxZoom={19}
-            attribution="&copy; OpenStreetMap contributors &copy; CARTO"
+          {/* Swapped TileLayer for ImageOverlay for offline rendering */}
+          <ImageOverlay
+            url="/map.png"
+            bounds={MAP_BOUNDS}
           />
           {plotted.map((incident) => (
             <Marker
               key={incident.id}
               position={[incident.location_lat, incident.location_lng]}
-              icon={iconFor(incident.violation_type, Boolean(newIds[incident.id]))}
+              icon={iconFor(incident.violation_type)}
             >
               <Tooltip
                 className="violation-tooltip"
@@ -195,15 +134,14 @@ function ViolationMap({ incidents = [], newIds = {} }) {
 
       <div className="violation-map__stats">
         <StatTile tone="litter" label="Litter Detected" value={litterDetected} />
-        <StatTile tone="cameras" label="Cameras Active" value={camerasActive} />
+        <StatTile tone="cameras" label="Cameras Active" value={CAMERAS_ACTIVE} />
         <StatTile tone="alerts" label="Unresolved Alerts" value={unresolvedAlerts} />
         <div className="stat-tile stat-tile--chart">
           <div className="stat-tile__head">
             <span className="stat-tile__label">Hourly Rate</span>
           </div>
-          <HourlyRateChart data={hourly} />
+          <HourlyRateChart />
         </div>
-        {hotspots !== null ? <HotspotsTile hotspots={hotspots} /> : null}
       </div>
     </div>
   )

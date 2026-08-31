@@ -1,17 +1,16 @@
-import { useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import mockIncidents from '../mock/incidents.mock.json'
 import ViolationTag from '../components/incidents/ViolationTag'
 import StatusButtonGroup from '../components/incidents/StatusButtonGroup'
 import PlateReadout from '../components/incidents/PlateReadout'
-import { updateIncidentStatus } from '../api/incidents'
-import { formatTimeAgo, evidenceSrc, REVIEW_STATUSES } from '../lib/incidents'
+import { formatTimeAgo, evidenceSrc } from '../lib/incidents'
 import './IncidentDetail.css'
 
-function findIncident(idParam) {
+const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:8000'
+
+function toNumericId(idParam) {
   const numeric = String(idParam ?? '').replace(/\D/g, '')
-  if (!numeric) return undefined
-  return mockIncidents.find((incident) => String(incident.id) === numeric)
+  return numeric || null
 }
 
 function formatCoordinates(lat, lng) {
@@ -49,10 +48,59 @@ function EvidenceImage({ src, alt }) {
 
 function IncidentDetail() {
   const { id } = useParams()
-  const incident = findIncident(id)
-  const [overrides, setOverrides] = useState({})
-  const [updateError, setUpdateError] = useState(null)
-  const errorTimer = useRef(null)
+  const numericId = toNumericId(id)
+
+  const [incident, setIncident] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    let cancelled = false
+    setLoading(true)
+
+    async function loadIncident() {
+      if (!numericId) {
+        if (!cancelled) {
+          setIncident(null)
+          setLoading(false)
+        }
+        return
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/incidents/${numericId}`)
+        if (!res.ok) throw new Error(`HTTP ${res.status}`)
+        const data = await res.json()
+        if (!cancelled) {
+          setIncident(data)
+        }
+      } catch (err) {
+        console.error(`Could not load incident ${numericId} from backend.`, err)
+        if (!cancelled) {
+          setIncident(null)
+        }
+      } finally {
+        if (!cancelled) setLoading(false)
+      }
+    }
+
+    loadIncident()
+    return () => {
+      cancelled = true
+    }
+  }, [numericId])
+
+  if (loading) {
+    return (
+      <section className="incident-detail">
+        <div className="incident-detail__inner">
+          <Link className="incident-detail__back" to="/">
+            Full Console
+          </Link>
+          <p className="incident-detail__missing-text">Loading incident…</p>
+        </div>
+      </section>
+    )
+  }
 
   if (!incident) {
     return (
@@ -74,24 +122,24 @@ function IncidentDetail() {
 
   const incidentId = `INC-${incident.id}`
   const timeAgo = formatTimeAgo(incident.timestamp)
-  const status = overrides[incident.id] ?? incident.review_status
+  const status = incident.review_status
 
-  const handleStatusChange = (next) => {
-    if (!REVIEW_STATUSES.includes(next)) return
+  const setStatus = async (newStatus) => {
+    const previousStatus = incident.review_status
 
-    const previousStatus = status
-    if (previousStatus === next) return
+    setIncident((current) => ({ ...current, review_status: newStatus }))
 
-    setOverrides((prev) => ({ ...prev, [incident.id]: next }))
-    if (errorTimer.current) window.clearTimeout(errorTimer.current)
-    setUpdateError(null)
-
-    updateIncidentStatus(incident.id, next).catch((err) => {
-      console.warn('Status update failed; reverting.', err)
-      setOverrides((prev) => ({ ...prev, [incident.id]: previousStatus }))
-      setUpdateError(err.message)
-      errorTimer.current = window.setTimeout(() => setUpdateError(null), 4000)
-    })
+    try {
+      const res = await fetch(`${API_BASE}/incidents/${incident.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ review_status: newStatus }),
+      })
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+    } catch (err) {
+      console.error(`Could not save status change for incident ${incident.id}; reverting.`, err)
+      setIncident((current) => ({ ...current, review_status: previousStatus }))
+    }
   }
 
   return (
@@ -146,12 +194,7 @@ function IncidentDetail() {
 
         <div className="incident-detail__actions">
           <span className="incident-detail__actions-label">Dispatch Decision</span>
-          {updateError ? (
-            <span className="incident-detail__update-error" role="alert" title={updateError}>
-              Update failed — reverted
-            </span>
-          ) : null}
-          <StatusButtonGroup size="lg" status={status} onChange={handleStatusChange} />
+          <StatusButtonGroup size="lg" status={status} onChange={setStatus} />
         </div>
       </div>
     </section>

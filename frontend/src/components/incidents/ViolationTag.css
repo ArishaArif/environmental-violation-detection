@@ -19,7 +19,7 @@
   --violation-tint: var(--tint-blue);
 }
 
-.violation-tag[data-violation='unknown'] {
-  --violation-color: var(--text-secondary);
-  --violation-tint: var(--tint-slate);
+.violation-tag[data-violation='smoke'] {
+  --violation-color: var(--violation-smoke);
+  --violation-tint: var(--tint-yellow);
 }

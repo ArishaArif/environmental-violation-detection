@@ -1,7 +1,7 @@
 
 .topbar {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: 1fr auto 1fr; /* center column hugs the nav, keeping it centered */
   align-items: center;
   height: var(--topbar-h);
   padding: 0 var(--space-4);
@@ -74,7 +74,7 @@
   align-items: center;
   background: none;
   border: none;
-  border-bottom: 2px solid transparent;
+  border-bottom: 2px solid transparent; /* reserved so the active underline never shifts layout */
   color: var(--text-secondary);
   font-family: var(--font-display);
   font-size: var(--fs-xs);
