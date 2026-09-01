@@ -1,9 +1,10 @@
 from ultralytics import YOLO
 
-model = YOLO("modelbest.pt")
+model = YOLO("vehicle_detector.pt")
 
-# modelbest.pt class indices: 0 Auto-Rickshaw, 1 Bike, 2 Bus, 3 Car, 4 HCV, 5 LCV, 6 Toto, 7 Smoke
-# Vehicle classes only (excludes Smoke):
+# vehicle_detector.pt's classes: 0 Auto-Rickshaw, 1 Bike, 2 Bus, 3 Car,
+# 4 HCV, 5 LCV, 6 Toto, 7 Smoke. Classes 0-6 = vehicles only; 7 (Smoke) is
+# deliberately excluded — this pass is littering-only, no smoke detection.
 results = model.track(
     source="sample.mp4",
     save=True,

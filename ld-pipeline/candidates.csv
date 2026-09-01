@@ -1,0 +1,4 @@
+blob_id,vehicle_track_id,first_seen_frame,diverge_frame,settled_x,settled_y,lifetime_frames
+7358,4,167,173,937.0,444.5,9
+28993,31,938,941,1330.5,506.5,7
+29085,31,940,946,1405.5,545.0,9

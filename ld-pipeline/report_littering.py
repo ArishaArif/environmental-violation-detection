@@ -5,16 +5,47 @@
 
 import argparse
 import csv
+import os
+import sys
 from collections import defaultdict
 from datetime import datetime
+from pathlib import Path
 
 import cv2
 import requests
 
-from anpr_engine import extract_plate_data
+# anpr_engine.py lives in ../ml-pipeline, not in this directory, so it isn't
+# importable by default no matter where this script is run from. Add that
+# folder to sys.path (relative to this file, not the current working
+# directory) before importing it.
+ML_PIPELINE_DIR = Path(__file__).resolve().parent.parent / "ml-pipeline"
+if str(ML_PIPELINE_DIR) not in sys.path:
+    sys.path.insert(0, str(ML_PIPELINE_DIR))
+
+try:
+    from anpr_engine import extract_plate_data
+except ImportError as e:
+    raise ImportError(
+        f"Could not import anpr_engine from {ML_PIPELINE_DIR}. "
+        "Make sure the ml-pipeline/ folder sits next to cv-pipeline/ in the "
+        "repo, and that its dependencies (see ml-pipeline/requirements.txt) "
+        "are installed in this environment."
+    ) from e
 
 API_URL = "http://127.0.0.1:8000/incidents/"
-EVIDENCE_DIR = "evidence"  # point this at the shared backend/evidence folder on demo day
+
+# The backend serves evidence images from backend/evidence/ (mounted at
+# /evidence in main.py) and builds evidence_url from evidence_path relative
+# to that folder. So files saved here MUST land in that exact folder, or the
+# frontend's evidence thumbnails will 404. Resolved relative to this file
+# (not the current working directory) so it works no matter where you run
+# this script from — override with EVIDENCE_SAVE_PATH if you want somewhere
+# else (e.g. a different backend instance on demo day).
+EVIDENCE_DIR = os.getenv(
+    "EVIDENCE_SAVE_PATH",
+    str(Path(__file__).resolve().parent.parent / "backend" / "evidence"),
+)
+os.makedirs(EVIDENCE_DIR, exist_ok=True)
 
 DEFAULT_LOCATION = (31.5204, 74.3587)  # placeholder Lahore coords — swap if you have real ones
 
@@ -99,7 +130,8 @@ def process(source_video, boxes_csv, candidates_csv, violation_type="littering")
         # Save evidence
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S%f")
         evidence_filename = f"litter_{timestamp}.jpg"
-        cv2.imwrite(f"{EVIDENCE_DIR}/{evidence_filename}", frame)  # full frame, more context than just the crop
+        evidence_fullpath = os.path.join(EVIDENCE_DIR, evidence_filename)
+        cv2.imwrite(evidence_fullpath, frame)  # full frame, more context than just the crop
 
         # Run ANPR on the vehicle crop
         plate_data = extract_plate_data(crop_img)

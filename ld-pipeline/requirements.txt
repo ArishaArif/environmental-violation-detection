@@ -1,0 +1,8 @@
+opencv_python==5.0.0.93
+numpy==2.5.2
+Requests==2.34.2
+ultralytics==8.4.133
+
+# Needed indirectly: report_littering.py imports anpr_engine from
+# ../ml-pipeline, so also install ml-pipeline/requirements.txt in this
+# same environment (see ml-pipeline/requirements.txt).

@@ -6,15 +6,20 @@ from pathlib import Path
 from ultralytics import YOLO
 
 # Class NAMES (case-insensitive) that count as "vehicle" for the heuristic.
-# Covers both COCO's names and best.pt's local vehicle-type names.
+# Covers both COCO's names (fallback: yolov8n.pt) and vehicle_detector.pt's
+# local vehicle-type names (Auto-Rickshaw, Bike, Bus, Car, HCV, LCV, Toto).
+# vehicle_detector.pt also has an 8th class, "Smoke" — intentionally left
+# out of both sets below. This pass is littering-only; smoke-emission
+# detection is out of scope for now.
 VEHICLE_NAMES = {
-    "car", "truck", "bus", "motorcycle",              # COCO
-    "auto-rickshaw", "bike", "hcv", "lcv", "toto",     # best.pt
+    "car", "truck", "bus", "motorcycle",              # COCO (yolov8n.pt fallback)
+    "auto-rickshaw", "bike", "hcv", "lcv", "toto",     # vehicle_detector.pt
 }
 
 # Class NAMES that count as a possible "litter object" proxy.
-# Only meaningful for COCO-based models — best.pt has none of these,
-# so the object side of the heuristic stays fully motion-based for it.
+# Only meaningful for COCO-based models — vehicle_detector.pt has none of
+# these (and its "Smoke" class is deliberately excluded, see above), so the
+# object side of the heuristic stays fully motion-based for it.
 OBJECT_NAMES = {"bottle", "backpack", "handbag", "person"}
 
 
@@ -99,7 +104,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--source", required=True, help="Path to input video, e.g. littering_sample.mp4")
     parser.add_argument("--out", default="boxes.csv", help="Output path (.csv or .json)")
-    parser.add_argument("--weights", default="modelbest.pt", help="Model weights, e.g. modelbest.pt or yolov8n.pt")
+    parser.add_argument("--weights", default="vehicle_detector.pt", help="Model weights, e.g. vehicle_detector.pt (custom) or yolov8n.pt (COCO fallback)")
     parser.add_argument("--tracker", default="bytetrack.yaml")
     parser.add_argument("--conf", type=float, default=0.25)
     parser.add_argument("--imgsz", type=int, default=640)

@@ -4,7 +4,7 @@ from ultralytics import YOLO
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--weights", default="modelbest.pt")
+    parser.add_argument("--weights", default="vehicle_detector.pt")
     args = parser.parse_args()
 
     model = YOLO(args.weights)
